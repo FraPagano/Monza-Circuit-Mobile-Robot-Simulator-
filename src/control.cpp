@@ -30,10 +30,10 @@ float front_th=1.5; 	// minimum front distance at wich the robot stay from the w
 float k_angular=1.0; 	// constant angular velocity while the robot is turning
 float k_linear=0.7; 	// constant linear velocity while the robot is turning
 float default_vel=2.0; 	// default linear velocity while the robot is not facing any wall
-float min_left; 		// this variable will contain the minimum distance from the wall computed on the left of the robot  
-float min_right; 		// this variable will contain the minimum distance from the wall computed on the right of the robot  
-float min_front; 		// this variable will contain the minimum distance from the wall computed on in front of the robot  
-float laser [721]; 		//this float array will contain all the distances in every direction: from 0 (right of the robot) to 721 (left of the robot).
+float min_left; 	// this variable will contain the minimum distance from the wall computed on the left of the robot  
+float min_right; 	// this variable will contain the minimum distance from the wall computed on the right of the robot  
+float min_front; 	// this variable will contain the minimum distance from the wall computed on in front of the robot  
+float laser [721]; 	//this float array will contain all the distances in every direction: from 0 (right of the robot) to 721 (left of the robot).
 
 /*###MESSAGES###*/
 geometry_msgs::Twist my_vel; //this is the declaration of a geomety_msgs::Twist type message

@@ -61,22 +61,22 @@ int main(int argc, char **argv)
 		
 		if(command=='a'){
 			my_input.request.input='a'; 				//Setting the request
-			client.waitForExistence(); 					//Waiting for the service to be advertised and available
-			client.call(my_input); 						//Call the service
+			client.waitForExistence(); 				//Waiting for the service to be advertised and available
+			client.call(my_input); 					//Call the service
 			cout<< BHGRN "Increasing..." RESET "\n";
 		}
 		else if(command=='s'){
 			my_input.request.input='s'; 				//Setting the request
-			client.waitForExistence();					//Waiting for the service to be advertised and available
-			client.call(my_input); 						//Call the service
+			client.waitForExistence();				//Waiting for the service to be advertised and available
+			client.call(my_input); 					//Call the service
 			cout<< BHBLU "Decreasing..." RESET "\n";
 		}
 		else if(command=='r'){
 			client_restart.waitForExistence();			//Waiting for the service to be advertised and available
 			client_restart.call(restart_srv); 			//Call the service
 			my_input.request.input='s'; 				//Setting the request
-			client.waitForExistence();					//Waiting for the service to be advertised and available
-			client.call(my_input); 						//Call the service
+			client.waitForExistence();				//Waiting for the service to be advertised and available
+			client.call(my_input); 					//Call the service
 			cout<< BHCYN "Restarting..." RESET "\n";
 		}
 		else if(command=='q'){
