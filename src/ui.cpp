@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 				my_input.request.input='q'; 				//Setting the request
 				client.call(my_input); 					//Call the service
 				cout<< BHRED "Exiting..." RESET "\n";
-				return 0;							//Terminating the current process
+				return 0;						//Terminating the current process
 			}
 			else if(exit_command=='n'){
 				cout<< BHGRN "Okay, let's continue!" RESET "\n";
