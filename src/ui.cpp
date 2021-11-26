@@ -1,3 +1,4 @@
+/*###LIBRARIES###*/
 #include "ros/ros.h"
 #include "turtlesim/Pose.h"
 #include "sensor_msgs/LaserScan.h"
@@ -8,7 +9,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-/*COLORS*/
+/*###COLORS###*/
 #define RESET "\033[0m"
 #define BHBLK "\e[1;90m"
 #define BHRED "\e[1;91m"
@@ -21,11 +22,21 @@
 
 using namespace std;
 
+/*###GLOBAL VARIABLES###*/
 char command;
+char exit_command;
+
+/*###CLIENTS###*/
 ros::ServiceClient client; 
 ros::ServiceClient client_restart; 
+
+/*###CUSTOM SERVICE MESSAGE###*/
+/*This is the declaration of a second_assignment::KeyboardInput type service message. 
+I created this custom service mesage for interpreting the keyboard inputs.	*/
 second_assignment::KeyboardInput my_input;
-std_srvs::Empty restart_srv;
+
+/*###SERVICE MESSAGE###*/
+std_srvs::Empty restart_srv; //this service message is used for resetting the robot's position
 
 
 int main(int argc, char **argv)
@@ -36,45 +47,55 @@ int main(int argc, char **argv)
 	cout<< BHCYN "Press 'r' for resetting the robot initial position and velocity!" RESET"\n"; 
 	cout<< BHRED "Press 'q' for quitting the applicaiton!" RESET"\n";
 	
+	// Initialize the node, setup the NodeHandle for handling the communication with the ROS system  
 	ros::init(argc, argv, "ui");
 	ros::NodeHandle n;
 	
+	//Define the clients
 	client =  n.serviceClient<second_assignment::KeyboardInput>("/keyboard_input");
 	client_restart =  n.serviceClient<std_srvs::Empty>("/reset_positions");
 	
-	
-
-	while(command!='q') {
+	//Waiting for inputs...
+	while(ros :: ok()) {
 		cin>>command;
 		
 		if(command=='a'){
-			my_input.request.input='a';
-			client.waitForExistence();
-			client.call(my_input);
+			my_input.request.input='a'; 				//Setting the request
+			client.waitForExistence(); 					//Waiting for the service to be advertised and available
+			client.call(my_input); 						//Call the service
 			cout<< BHGRN "Increasing..." RESET "\n";
 		}
 		else if(command=='s'){
-			my_input.request.input='s';
-			client.waitForExistence();
-			client.call(my_input);
+			my_input.request.input='s'; 				//Setting the request
+			client.waitForExistence();					//Waiting for the service to be advertised and available
+			client.call(my_input); 						//Call the service
 			cout<< BHBLU "Decreasing..." RESET "\n";
 		}
 		else if(command=='r'){
-			client_restart.waitForExistence();
-			client_restart.call(restart_srv);
-			my_input.request.input='s';
-			client.waitForExistence();
-			client.call(my_input);
+			client_restart.waitForExistence();			//Waiting for the service to be advertised and available
+			client_restart.call(restart_srv); 			//Call the service
+			my_input.request.input='s'; 				//Setting the request
+			client.waitForExistence();					//Waiting for the service to be advertised and available
+			client.call(my_input); 						//Call the service
 			cout<< BHCYN "Restarting..." RESET "\n";
 		}
 		else if(command=='q'){
-			my_input.request.input='q';
-			client.call(my_input);
-			cout<< BHRED "Exiting..." RESET "\n";
-			return 0;
-			
+			cout<< BHRED "Are you sure you want to quit? 'y' for Yes, 'n' for No" RESET "\n";
+			cin>>exit_command;		
+			if(exit_command=='y'){
+				my_input.request.input='q'; 				//Setting the request
+				client.call(my_input); 						//Call the service
+				cout<< BHRED "Exiting..." RESET "\n";
+				return 0;									//Terminating the current process
+			}
+			else if(exit_command=='n'){
+				cout<< BHGRN "Okay, let's continue!" RESET "\n";
+			}
+			else{
+				cout<< BHRED "Press 'y' for Yes, 'n' for No" RESET "\n";
+			}
 		}
-		else{
+		else{ // A not allowed command was pressed
 			cout<< BHRED "This command is not allowed, please use the commands above!" RESET "\n";
 		}
 	}
