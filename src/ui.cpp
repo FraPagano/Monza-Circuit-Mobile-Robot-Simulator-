@@ -83,10 +83,10 @@ int main(int argc, char **argv)
 			cout<< BHRED "Are you sure you want to quit? 'y' for Yes, 'n' for No" RESET "\n";
 			cin>>exit_command;		
 			if(exit_command=='y'){
-				my_input.request.input='q'; 				//Setting the request
-				client.call(my_input); 					//Call the service
+				my_input.request.input='q'; 			//Setting the request
+				client.call(my_input); 				//Call the service
 				cout<< BHRED "Exiting..." RESET "\n";
-				return 0;						//Terminating the current process
+				return 0;					//Terminating the current process
 			}
 			else if(exit_command=='n'){
 				cout<< BHGRN "Okay, let's continue!" RESET "\n";
