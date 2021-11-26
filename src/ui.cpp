@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 		else if(command=='r'){
 			client_restart.waitForExistence();			//Waiting for the service to be advertised and available
 			client_restart.call(restart_srv); 			//Call the service
-			my_input.request.input='s'; 				//Setting the request
+			my_input.request.input='r'; 				//Setting the request
 			client.waitForExistence();				//Waiting for the service to be advertised and available
 			client.call(my_input); 					//Call the service
 			cout<< BHCYN "Restarting..." RESET "\n";

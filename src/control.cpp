@@ -27,8 +27,8 @@ ros::Publisher pub;
 
 /*###GLOBAL VARIABLES###*/
 float front_th=1.5; 	// minimum front distance at wich the robot stay from the walls
-float k_angular=1.0; 	// constant angular velocity while the robot is turning
-float k_linear=0.7; 	// constant linear velocity while the robot is turning
+float k_angular=2.0; 	// constant angular velocity while the robot is turning
+float k_linear=0.4; 	// constant linear velocity while the robot is turning
 float default_vel=2.0; 	// default linear velocity while the robot is not facing any wall
 float min_left; 	// this variable will contain the minimum distance from the wall computed on the left of the robot  
 float min_right; 	// this variable will contain the minimum distance from the wall computed on the right of the robot  
@@ -89,7 +89,7 @@ bool interpreter(second_assignment::KeyboardInput::Request &req, second_assignme
 		kill(getpid(), SIGINT); // Kill the current process. (I included the <signnal.h> library!)
 	}
 	else if(req.input=='r'){
-		my_input.response.multiplier=1.0;
+		my_input.response.multiplier = 1.0;
 	}
 	return true;
 }
@@ -113,11 +113,11 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 	
 	min_left=compute_min(620, 720, ranges);
 	min_right=compute_min(0, 100, ranges);
-	min_front=compute_min(340, 380 , ranges);
+	min_front=compute_min(300, 420 , ranges);
 		
 	cout<< "\n" BHMAG "Closest laser scan on the right: "<<min_right<< "\n" RESET;
-	cout<< "\n" BHCYN "Closest laser scan on the left: "<<min_left<< "\n" RESET;
-	cout<< "\n" BHBLU "Closest front laser scan: "<<min_front<< "\n" RESET;
+	cout<< BHCYN "Closest laser scan on the left: "<<min_left<< "\n" RESET;
+	cout<< BHBLU "Closest front laser scan: "<<min_front<< "\n" RESET;
 
 	if(min_front<front_th){
 		
@@ -125,25 +125,29 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 		if(min_left<0.8*min_right){
 			
 			cout<< BHWHT "Turning right..." RESET "\n";
-			my_vel.angular.z = -k_angular*my_input.response.multiplier;
+			my_vel.angular.z = -k_angular;
 			my_vel.linear.x = k_linear*my_input.response.multiplier;
+
 		}
 		else if(min_right<0.8*min_left){
-			
+		
 			cout<< BHWHT "Turning left..." RESET "\n";
-			my_vel.angular.z = k_angular*my_input.response.multiplier;
+			my_vel.angular.z = k_angular;
 			my_vel.linear.x = k_linear*my_input.response.multiplier;
 		}
 		else {
 			
 			my_vel.linear.x = default_vel*my_input.response.multiplier;
+			my_vel.angular.z = 0.0;
 		}
 	}
 	else{
 		
 		cout<< BHGRN "I'll go straight" RESET "\n";
 		my_vel.linear.x=default_vel*my_input.response.multiplier;
+		my_vel.angular.z = 0.0;
 	}
+	cout<< BHWHT "The robot current linear velocity is "<<my_input.response.multiplier<<" times the default velocity\n" RESET;
 	pub.publish(my_vel);	
 }
 
@@ -157,6 +161,7 @@ void RobotCallback(const sensor_msgs::LaserScan::ConstPtr& msg){
 		for(int i=0; i<721; i++){
 			laser[i]=msg->ranges[i];
 		}		
+		
 		Drive(min_left, min_right, min_front, laser);		
 }
         
