@@ -26,14 +26,18 @@ using namespace std;
 ros::Publisher pub;
 
 /*###GLOBAL VARIABLES###*/
-float front_th=1.5; 	// minimum front distance at wich the robot stay from the walls
-float k_angular=15.0; 	// constant angular velocity while the robot is turning
-float k_linear=0.4; 	// constant linear velocity while the robot is turning
-float default_vel=2.0; 	// default linear velocity while the robot is not facing any wall
-float min_left; 	// this variable will contain the minimum distance from the wall computed on the left of the robot  
-float min_right; 	// this variable will contain the minimum distance from the wall computed on the right of the robot  
-float min_front; 	// this variable will contain the minimum distance from the wall computed on in front of the robot  
-float laser [721]; 	//this float array will contain all the distances in every direction: from 0 (right of the robot) to 721 (left of the robot).
+float front_th=1.5; 		// minimum front distance at which the robot stay from the walls
+float front_left_th=1.0;	// minimum front-left distance at which the robot stay from the walls
+float front_right_th=1.0;	// minimum front-right distance at wich the robot stay from the walls
+float k_angular=15.0; 		// constant angular velocity while the robot is turning
+float k_linear=0.4; 		// constant linear velocity while the robot is turning
+float default_vel=2.0; 		// default linear velocity while the robot is not facing any wall
+float min_left; 		// this variable will contain the minimum distance from the wall computed on the left of the robot  
+float min_right; 		// this variable will contain the minimum distance from the wall computed on the right of the robot  
+float min_front; 		// this variable will contain the minimum distance from the wall computed on in front of the robot  
+float min_front_l;
+float min_front_r;
+float laser [721]; 		//this float array will contain all the distances in every direction: from 0 (right of the robot) to 721 (left of the robot).
 
 /*###MESSAGES###*/
 geometry_msgs::Twist my_vel; //this is the declaration of a geomety_msgs::Twist type message
@@ -114,6 +118,8 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 	min_left=compute_min(620, 720, ranges);
 	min_right=compute_min(0, 100, ranges);
 	min_front=compute_min(300, 420 , ranges);
+	min_front_l=compute_min(450, 510, ranges);
+	min_front_r=compute_min(170, 230, ranges);
 		
 	cout<< "\n" BHMAG "Closest laser scan on the right: "<<min_right<< "\n" RESET;
 	cout<< BHCYN "Closest laser scan on the left: "<<min_left<< "\n" RESET;
@@ -133,6 +139,16 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 			cout<< BHWHT "Turning left..." RESET "\n";
 			my_vel.angular.z = k_angular;
 			my_vel.linear.x = k_linear*my_input.response.multiplier;
+		}
+		else if(min_front_l<front_left_th){
+			cout<< BHWHT "Turning a little bit left..." RESET "\n";
+			my_vel.angular.z = k_angular;
+			my_vel.linear.x = k_linear;
+		}
+		else if(min_front_r<front_right_th){
+			cout<< BHWHT "Turning a little bit right..." RESET "\n";
+			my_vel.angular.z = -k_angular;
+			my_vel.linear.x = k_linear;
 		}
 		else {
 			
