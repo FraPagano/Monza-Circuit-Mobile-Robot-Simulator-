@@ -1,0 +1,6 @@
+<launch>
+<node name="stageros" pkg="stage_ros" args="$(find second_assignment)/world/my_world.world" type="stageros"/>
+<node name="control" pkg="second_assignment" output="screen" type="control"/>
+<node name="ui" pkg="second_assignment" output="screen" launch-prefix="xterm -e" required="true" type="ui"/>
+</launch>
+

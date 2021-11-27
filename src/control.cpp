@@ -27,7 +27,7 @@ ros::Publisher pub;
 
 /*###GLOBAL VARIABLES###*/
 float front_th=1.5; 	// minimum front distance at wich the robot stay from the walls
-float k_angular=2.0; 	// constant angular velocity while the robot is turning
+float k_angular=15.0; 	// constant angular velocity while the robot is turning
 float k_linear=0.4; 	// constant linear velocity while the robot is turning
 float default_vel=2.0; 	// default linear velocity while the robot is not facing any wall
 float min_left; 	// this variable will contain the minimum distance from the wall computed on the left of the robot  
@@ -123,14 +123,13 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 		
 		cout<< BHRED "Stop, there's a wall in front of me!" RESET "\n";
 		if(min_left<0.8*min_right){
-			
+		
 			cout<< BHWHT "Turning right..." RESET "\n";
 			my_vel.angular.z = -k_angular;
 			my_vel.linear.x = k_linear*my_input.response.multiplier;
-
 		}
 		else if(min_right<0.8*min_left){
-		
+			
 			cout<< BHWHT "Turning left..." RESET "\n";
 			my_vel.angular.z = k_angular;
 			my_vel.linear.x = k_linear*my_input.response.multiplier;
