@@ -166,8 +166,22 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 ###  Installing and running 
 ----------------------
 Here's some useful informations regarding running the simulator.
-First of all, 
+First of all, [xterm](https://it.wikipedia.org/wiki/Xterm), a standard terminal emulator, is needed. You can install xterm by entering the following commands in the terminal:
+```
+sudo apt update
+sudo apt-get install xterm
+```
+I created a launch file in the launch directory that executes three nodes at the same time:
 
+ - The `stageros` node, that runs the simulation environment; 
+ - The `control` node; 
+ - The `ui` node.
+
+The UI node will run on an xterm terminal. 
+
+If any of the three node terminates the launch file will terminates all the nodes.
+	
+	
 ### Flowchart
 
 --------------------------------
