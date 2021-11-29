@@ -224,11 +224,9 @@ Here's a **peice** of the code for the `while(ros::ok())` loop:
 
 Here's some useful informations regarding running the simulator.
 First of all, [xterm](https://it.wikipedia.org/wiki/Xterm), a standard terminal emulator, is needed. You can install xterm by entering the following commands in the terminal:
-
 ```
 sudo apt update
 sudo apt-get install xterm
-
 ```
 I created a launch file in the launch directory that executes three nodes at the same time:
 
@@ -245,7 +243,7 @@ If any of the three node terminates the launch file will terminates all the node
 In order to have a GUI plugin for visualizing the ROS computation graph, here's a *rqt_graph* about the project:
 
 <p align="center">
-<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/rqt_graph.jpg" height=320 width=380>
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/rqt_graph.jpg" height=250 width=500>
 </p>
 
 As you can see, the *control* node publishes both the linear and the angular velocity to the robot in the environment on the */cmd_vel* topic.  At the same time, the control node is subscibed to the */stage_ros* topic that provides the robot's distances from the wall. The *ui*  node, instead, handles inputs from the user and sends requests in order to let the *control* node to modify the robot velocity.
@@ -259,14 +257,23 @@ For a more precise description of what the two nodes do you can consult the foll
 ### Results
 --------------------------------
 
-The final result is that the robot correctly runs around the circuit and, despite there are some things that could be improved in the future, I am satisfied with the work that I've done specially because that was my first approach with python programming language. The whole work was carried out together with my friends and uni colleagues.
+The final result is that the robot correctly runs around the circuit and, despite there are some things that could be improved in the future, I am satisfied with the work that I've done specially because that was my first approach with the ROS framework. 
 
 In order to make you understand how my code works, I recorded this video:
 
 
-### Possible Improvements
+https://user-images.githubusercontent.com/91267426/143897374-b2abea45-ce71-4e31-89b0-dc77842e4775.mp4
 
+
+
+
+
+
+### Possible Improvements
 --------------------------------
+A possible improvement that can be implemented is certainly to avoid bumping the robot into the wall when we increase its speed a lot. Some controls were implemented such as the computation of the minimum distance in the  front left & right direction span. Nevertheless I measured that with a 3.5 times greater velocity than the default velocity the robot bumps into the wall.
+
+
 
 
 
