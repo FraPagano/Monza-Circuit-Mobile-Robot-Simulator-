@@ -93,7 +93,7 @@ float compute_min(int imin, int imax, float ranges[]){
 
  - `void Drive(float min_left, float min_right, float min_front, float ranges [])`: This is the function that drives the robot into the circuit. This function will be called in the Callback function so that the instructions will be looped. The implementation logic is quite simple: the minimum distances from the wall to the right, left, and in front of the robot are continuously updated. If the distace in front of the robot is less than 1.5 then a turning method is activated. If no walls closer than 1.5 are detected in the front direction the robot is simply going straight. In order to read all the data from the laser sensor which the robot is equipped with I implemented a subscriber to the `"/base_scan"` topic. This topic uses a message of type [`sensor_msgs::LaserScan`](http://docs.ros.org/en/api/sensor_msgs/html/msg/LaserScan.html) whose field called `ranges`  is an array of 721 elements. Such array provide us the distances from the walls in every direction. Element 0 give us the distance from the wall on the right side and the 721st element give us the distance on the left side. The logic is quite simple: if the distance on the right is less than the distance on the left, the robot is turning left. And the opposite is also true. The array's checked spans  are:  
 	 - Left side, corresponding to the 0-100 array span.
-	 - Right side, corresponding to the 620-721 array span.
+	 - Right side, corresponding to the 620-720 array span.
 	 - Front direction, corresponding to the 300-420 array span.
 	 - Front-left side, corresponding to the 450-510 array span.
 	 - Front-right side, corresponding to the 170-230 array span
@@ -112,8 +112,8 @@ The velocity managing  was done through the `geometry_message::Twist` message. T
 			3.	`min_front` (float): minimum distance from the wall in front of the robot.
 			4. 	`ranges[]` (float): array in which the computation takes place.
 			
-	There are no return values for this funciton.
-	Here's the code:
+There are no return values for this funciton.
+Here's the code:
 ```c++
 void Drive(float min_left, float min_right, float min_front, float ranges []){
 	
@@ -168,6 +168,10 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 	pub.publish(my_vel);	
 }
 ```
+<p align="center">
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/turn.gif" height=350 width=400>
+</p>
+
 #### UI node
 
 The User Interface node handles the user keyboard inputs. Here's a legend of the allowed commands:
@@ -185,7 +189,7 @@ Some important global object were instantiated such as:
  4. A `char` type that will contain the user inputs,
  5. Another `char` type that will contain inputs when the user presses 'q'; 
 
-In the `main` function of the node a `while(ros::ok())` loop was created in order to constantly wait for user input. Whenever one of the above keyboard key is pressed, through a`cin>>`, we put the user input in the `command` variable. If the command is a not allowed command, an error message is printed. Instead, if the user input is an allowed command, the `request` field of the custom service message `second_assignment::KeyboardInput my_input` is filled and request is sent to the server. The cases in which the input are *'r'* and *'q'*  are a little bit different from other cases because in *'r'* case we call two services: the one for restarting the robot position and the one for resetting the default velocity. For the *'q'* case, instead, some control for safety were implemented.
+In the `main` function of the node a `while(ros::ok())` loop was created in order to constantly wait for user input. Whenever one of the above keyboard key is pressed, through `cin>>`, the user input is put in the `command` variable. If the command is a not allowed command, an error message is printed. Instead, if the user input is an allowed command, the `request` field of the custom service message `second_assignment::KeyboardInput my_input` is filled and request is sent to the server. The cases in which the input are *'r'* and *'q'*  are a little bit different from other cases because in *'r'* case we call two services: the one for restarting the robot position and the one for resetting the default velocity. For the *'q'* case, instead, some control for safety were implemented.
 Here's a **peice** of the code for the `while(ros::ok())` loop:
 ```c++
  	while(ros :: ok()) {
@@ -257,7 +261,16 @@ As you can see, the *control* node publishes both the linear and the angular vel
 ### Flowcharts
 --------------------------------
 
-For a more precise description of what the two nodes do you can consult the following flowchart, created with [Lucidchart](https://www.lucidchart.com/pages/it/landing?utm_source=google&utm_medium=cpc&utm_campaign=_chart_it_allcountries_mixed_search_brand_bmm_&km_CPC_CampaignId=9589672283&km_CPC_AdGroupID=99331286392&km_CPC_Keyword=%2Blucidcharts&km_CPC_MatchType=b&km_CPC_ExtensionID=&km_CPC_Network=g&km_CPC_AdPosition=&km_CPC_Creative=424699413299&km_CPC_TargetID=kwd-334618660008&km_CPC_Country=1008337&km_CPC_Device=c&km_CPC_placement=&km_CPC_target=&mkwid=sKwFuAgHb_pcrid_424699413299_pkw_%2Blucidcharts_pmt_b_pdv_c_slid__pgrid_99331286392_ptaid_kwd-334618660008_&gclid=CjwKCAjw5c6LBhBdEiwAP9ejG86DblinG5ivYRvMmKSvI8Dl7as9i2oINlmgqIDoj0gpLX6WfnCenRoCxxQQAvD_BwE)
+For a more precise description of what the two nodes do you can consult the following flowcharts, created with [Lucidchart](https://www.lucidchart.com/pages/it/landing?utm_source=google&utm_medium=cpc&utm_campaign=_chart_it_allcountries_mixed_search_brand_bmm_&km_CPC_CampaignId=9589672283&km_CPC_AdGroupID=99331286392&km_CPC_Keyword=%2Blucidcharts&km_CPC_MatchType=b&km_CPC_ExtensionID=&km_CPC_Network=g&km_CPC_AdPosition=&km_CPC_Creative=424699413299&km_CPC_TargetID=kwd-334618660008&km_CPC_Country=1008337&km_CPC_Device=c&km_CPC_placement=&km_CPC_target=&mkwid=sKwFuAgHb_pcrid_424699413299_pkw_%2Blucidcharts_pmt_b_pdv_c_slid__pgrid_99331286392_ptaid_kwd-334618660008_&gclid=CjwKCAjw5c6LBhBdEiwAP9ejG86DblinG5ivYRvMmKSvI8Dl7as9i2oINlmgqIDoj0gpLX6WfnCenRoCxxQQAvD_BwE):
+
+This is the controller node's flowchart:
+<p align="center">
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/controller_flowchart.jpeg" height=700 width=600>
+</p>
+
+This one, instead, is the UI node's flowchart:
+
+I created also a global flowchart in order to have a more precise general idea of the implementation of the project:
 
 
 ### Results
