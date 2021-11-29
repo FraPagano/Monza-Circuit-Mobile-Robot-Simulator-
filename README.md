@@ -265,13 +265,20 @@ For a more precise description of what the two nodes do you can consult the foll
 
 This is the controller node's flowchart:
 <p align="center">
-<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/controller_flowchart.jpeg" height=700 width=600>
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/controller_flowchart.jpeg" height=670 width=650>
 </p>
 
 This one, instead, is the UI node's flowchart:
+<p align="center">
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/ui_flowchart.jpeg" height=670 width=700>
+</p>
+
 
 I created also a global flowchart in order to have a more precise general idea of the implementation of the project:
 
+<p align="center">
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/global_flowchart.jpeg" height=700 width=650>
+</p>
 
 ### Results
 --------------------------------
