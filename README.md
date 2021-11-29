@@ -270,14 +270,14 @@ This is the controller node's flowchart:
 
 This one, instead, is the UI node's flowchart:
 <p align="center">
-<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/ui_flowchart.jpeg" height=670 width=700>
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/ui_flowchart.jpeg" height=670 width=750>
 </p>
 
 
-I created also a global flowchart in order to have a more precise general idea of the implementation of the project:
+I created also a global flowchart in order to have a more precise general idea of the project's implementation:
 
 <p align="center">
-<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/global_flowchart.jpeg" height=700 width=650>
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/global_flowchart.jpeg" height=600 width=750>
 </p>
 
 ### Results
