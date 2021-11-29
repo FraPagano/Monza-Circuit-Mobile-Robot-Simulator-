@@ -29,7 +29,7 @@ ros::Publisher pub;
 float front_th=1.5; 		// minimum front distance at which the robot stay from the walls
 float front_left_th=1.0;	// minimum front-left distance at which the robot stay from the walls
 float front_right_th=1.0;	// minimum front-right distance at wich the robot stay from the walls
-float k_angular=15.0; 		// constant angular velocity while the robot is turning
+float k_angular=5.0; 		// constant angular velocity while the robot is turning
 float k_linear=0.4; 		// constant linear velocity while the robot is turning
 float default_vel=2.0; 		// default linear velocity while the robot is not facing any wall
 float min_left; 		// this variable will contain the minimum distance from the wall computed on the left of the robot  
@@ -76,8 +76,8 @@ bool interpreter(second_assignment::KeyboardInput::Request &req, second_assignme
 	/*This is the function that uses the Service 'service'. It reads the requests from clients and
 	change the global variable 'my_input.response.multiplier' that multiplies the velocities so that 
 	it makes the robot increase/decrease the velocity. 
-	1.	The keyborad key 'a' is used for incrasing the multiplier and therefore also the robot velocity.
-	2.	The keyborad key 's' is used for decrasing the multiplier and therefore also the robot velocity.
+	1.	The keyborad key 'a' is used for increasing the multiplier and therefore also the robot velocity.
+	2.	The keyborad key 's' is used for decreasing the multiplier and therefore also the robot velocity.
 	3.	The keyborad key 'q' is used for exiting the current node and the user interface node.
 	4.	The keyborad key 'r' is used for restarting the robot from its initial position but also for resetting his initial velocity.	 
 	
@@ -141,13 +141,13 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 			my_vel.linear.x = k_linear*my_input.response.multiplier;
 		}
 		else if(min_front_l<front_left_th){
-			cout<< BHWHT "Turning a little bit left..." RESET "\n";
-			my_vel.angular.z = k_angular;
+			cout<< BHWHT "Turning a little bit right..." RESET "\n";
+			my_vel.angular.z = -k_angular;
 			my_vel.linear.x = k_linear;
 		}
 		else if(min_front_r<front_right_th){
-			cout<< BHWHT "Turning a little bit right..." RESET "\n";
-			my_vel.angular.z = -k_angular;
+			cout<< BHWHT "Turning a little bit left..." RESET "\n";
+			my_vel.angular.z = k_angular;
 			my_vel.linear.x = k_linear;
 		}
 		else {

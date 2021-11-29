@@ -224,9 +224,11 @@ Here's a **peice** of the code for the `while(ros::ok())` loop:
 
 Here's some useful informations regarding running the simulator.
 First of all, [xterm](https://it.wikipedia.org/wiki/Xterm), a standard terminal emulator, is needed. You can install xterm by entering the following commands in the terminal:
+
 ```
 sudo apt update
 sudo apt-get install xterm
+
 ```
 I created a launch file in the launch directory that executes three nodes at the same time:
 
