@@ -33,6 +33,9 @@ The greaest issues that I faced with during the implementation of the project we
 
 ### Code description
 ---------------------------
+
+#### Controlling node
+
 Some important global object were instantiated such as:
 
  1. A `geometry_msgs::Twist my_vel` message used for setting both the robot's linear and angular default velocities;
@@ -40,7 +43,6 @@ Some important global object were instantiated such as:
  3. A `ros::ServiceClient` for the velocity changes, handled by the UI node; 
  4. Another `ros::ServiceClient` for the restart request, handled by the UI node.
 
-#### Controlling node
 The controlling node is the one that set  both the robot's linear and angular velocities and elaborates data from laser sensors. Here, a turn decison method was implemented but also a Server that collects the Client (in the UI node) requests.
 The functions that I created are:
 
@@ -70,7 +72,7 @@ bool interpreter(second_assignment::KeyboardInput::Request &req, second_assignme
 	return true;
 }
 ```
-- `float compute_min(int imin, int imax, float ranges[])`: This function computes the minimum value among all values in the `ranges[]` array. The arguments are: 
+- float `compute_min(int imin, int imax, float ranges[])`: This function computes the minimum value among all values in the `ranges[]` array. The arguments are: 
 		1.	`i_min` (int): smaller index from which the computation should start
 		2. 	`i_max` (int): grater  index in which the computation should end    
 		3. 	`ranges[]` (float): this is the array in which the computation must be done
@@ -96,7 +98,13 @@ float compute_min(int imin, int imax, float ranges[]){
 	 - Front-left side, corresponding to the 450-510 array span.
 	 - Front-right side, corresponding to the 170-230 array span
 	 
-	Thanks to the `compute_min(int imin, int imax, float ranges[])` function I could extrapolate the lowest distances among each span and therefore I could also let the robot make decisions based on the minimum distances. 
+	Here's a picture that clarify that concept:
+	
+<p align="center">
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/Scan.jpg" height=320 width=380>
+</p>
+
+Thanks to the `compute_min(int imin, int imax, float ranges[])` function I could extrapolate the lowest distances among each span and therefore I could also let the robot make decisions based on the minimum distances. 
 The velocity managing  was done through the `geometry_message::Twist` message. The fields *linear* and *angular* have been used to modify the linear and angular velocity of the robot, while the fields *x* and *z* define orientation axis on which the speed is considered. Finally, the message is published.
 	Arguments:
 			1.	`min_left` (float): minimum distance from the wall on the left of the robot;
@@ -135,13 +143,13 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 			my_vel.linear.x = k_linear*my_input.response.multiplier;
 		}
 		else if(min_front_l<front_left_th){
-			cout<< BHWHT "Turning a little bit left..." RESET "\n";
-			my_vel.angular.z = k_angular;
+			cout<< BHWHT "Turning a little bit right..." RESET "\n";
+			my_vel.angular.z = -k_angular;
 			my_vel.linear.x = k_linear;
 		}
 		else if(min_front_r<front_right_th){
-			cout<< BHWHT "Turning a little bit right..." RESET "\n";
-			my_vel.angular.z = -k_angular;
+			cout<< BHWHT "Turning a little bit left..." RESET "\n";
+			my_vel.angular.z = k_angular;
 			my_vel.linear.x = k_linear;
 		}
 		else {
@@ -162,9 +170,58 @@ void Drive(float min_left, float min_right, float min_front, float ranges []){
 ```
 #### UI node
 
+The User Interface node handles the user keyboard inputs. Here's a legend of the allowed commands:
+
+ - *'a'* keyboard key is used for increasing the robot linear velocity;
+ - *'s'* keyboard key is used for decreasing the robot linear velocity;
+ - *'r'* keyboard key is used for resetting the robot position and linear velocity;
+ - *'q'* keyboard key is used for quitting the application and terminates all the nodes;
+
+Some important global object were instantiated such as:
+
+ 1. A custom service message `second_assignment::KeyboardInput my_input`: here the `request` field of this object is set.
+ 2. A `ros::ServiceClient` for handling the keyboard input; 
+ 3. Another `ros::ServiceClient` for handling the service that restart the robot position; 
+ 4. A `char` type that will contain the user inputs,
+ 5. Another `char` type that will contain inputs when the user presses 'q'; 
+
+In the `main` function of the node a `while(ros::ok())` loop was created in order to constantly wait for user input. Whenever one of the above keyboard key is pressed, through a`cin>>`, we put the user input in the `command` variable. If the command is a not allowed command, an error message is printed. Instead, if the user input is an allowed command, the `request` field of the custom service message `second_assignment::KeyboardInput my_input` is filled and request is sent to the server. The cases in which the input are *'r'* and *'q'*  are a little bit different from other cases because in *'r'* case we call two services: the one for restarting the robot position and the one for resetting the default velocity. For the *'q'* case, instead, some control for safety were implemented.
+Here's a **peice** of the code for the `while(ros::ok())` loop:
+```c++
+ 	while(ros :: ok()) {
+		cin>>command;
+		
+		if(command=='r'){
+			client_restart.waitForExistence();		
+			client_restart.call(restart_srv); 			
+			my_input.request.input='r'; 			
+			client.waitForExistence();				
+			client.call(my_input); 				
+			cout<< BHCYN "Restarting..." RESET "\n";
+		}
+		else if(command=='q'){
+			cout<< BHRED "Are you sure you want to quit? 'y' for Yes, 'n' for No" RESET "\n";
+			cin>>exit_command;		
+			if(exit_command=='y'){
+				my_input.request.input='q'; 	
+				client.call(my_input); 		
+				cout<< BHRED "Exiting..." RESET "\n";
+				return 0;					
+			}
+			else if(exit_command=='n'){
+				cout<< BHGRN "Okay, let's continue!" RESET "\n";
+			}
+		}
+		else{ // A not allowed command was pressed
+			cout<< BHRED "This command is not allowed, please use the commands above!" RESET "\n";
+		}
+	}
+ ```
+
 
 ###  Installing and running 
 ----------------------
+
 Here's some useful informations regarding running the simulator.
 First of all, [xterm](https://it.wikipedia.org/wiki/Xterm), a standard terminal emulator, is needed. You can install xterm by entering the following commands in the terminal:
 ```
@@ -180,18 +237,27 @@ I created a launch file in the launch directory that executes three nodes at the
 The UI node will run on an xterm terminal. 
 
 If any of the three node terminates the launch file will terminates all the nodes.
-	
-	
-### Flowchart
 
+### Rqt Graph
+--------------------------------
+In order to have a GUI plugin for visualizing the ROS computation graph, here's a *rqt_graph* about the project:
+
+<p align="center">
+<img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/rqt_graph.jpg" height=320 width=380>
+</p>
+
+As you can see, the *control* node publishes both the linear and the angular velocity to the robot in the environment on the */cmd_vel* topic.  At the same time, the control node is subscibed to the */stage_ros* topic that provides the robot's distances from the wall. The *ui*  node, instead, handles inputs from the user and sends requests in order to let the *control* node to modify the robot velocity.
+
+### Flowcharts
 --------------------------------
 
-For a more precise description of what my code does you can consult the following flowchart, created with [Lucidchart](https://www.lucidchart.com/pages/it/landing?utm_source=google&utm_medium=cpc&utm_campaign=_chart_it_allcountries_mixed_search_brand_bmm_&km_CPC_CampaignId=9589672283&km_CPC_AdGroupID=99331286392&km_CPC_Keyword=%2Blucidcharts&km_CPC_MatchType=b&km_CPC_ExtensionID=&km_CPC_Network=g&km_CPC_AdPosition=&km_CPC_Creative=424699413299&km_CPC_TargetID=kwd-334618660008&km_CPC_Country=1008337&km_CPC_Device=c&km_CPC_placement=&km_CPC_target=&mkwid=sKwFuAgHb_pcrid_424699413299_pkw_%2Blucidcharts_pmt_b_pdv_c_slid__pgrid_99331286392_ptaid_kwd-334618660008_&gclid=CjwKCAjw5c6LBhBdEiwAP9ejG86DblinG5ivYRvMmKSvI8Dl7as9i2oINlmgqIDoj0gpLX6WfnCenRoCxxQQAvD_BwE)
+For a more precise description of what the two nodes do you can consult the following flowchart, created with [Lucidchart](https://www.lucidchart.com/pages/it/landing?utm_source=google&utm_medium=cpc&utm_campaign=_chart_it_allcountries_mixed_search_brand_bmm_&km_CPC_CampaignId=9589672283&km_CPC_AdGroupID=99331286392&km_CPC_Keyword=%2Blucidcharts&km_CPC_MatchType=b&km_CPC_ExtensionID=&km_CPC_Network=g&km_CPC_AdPosition=&km_CPC_Creative=424699413299&km_CPC_TargetID=kwd-334618660008&km_CPC_Country=1008337&km_CPC_Device=c&km_CPC_placement=&km_CPC_target=&mkwid=sKwFuAgHb_pcrid_424699413299_pkw_%2Blucidcharts_pmt_b_pdv_c_slid__pgrid_99331286392_ptaid_kwd-334618660008_&gclid=CjwKCAjw5c6LBhBdEiwAP9ejG86DblinG5ivYRvMmKSvI8Dl7as9i2oINlmgqIDoj0gpLX6WfnCenRoCxxQQAvD_BwE)
+
 
 ### Results
 --------------------------------
 
-The final result is that the robot correctly runs around the circuit and, despite there are some things that could be improved in the future, I am satisfied with the work that I've done specially because that was my first approach with the ROS framework. The whole work was carried out together with my friends and uni colleagues.
+The final result is that the robot correctly runs around the circuit and, despite there are some things that could be improved in the future, I am satisfied with the work that I've done specially because that was my first approach with python programming language. The whole work was carried out together with my friends and uni colleagues.
 
 In order to make you understand how my code works, I recorded this video:
 
@@ -199,6 +265,8 @@ In order to make you understand how my code works, I recorded this video:
 ### Possible Improvements
 
 --------------------------------
+
+
 
 
 
