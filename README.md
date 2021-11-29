@@ -234,6 +234,12 @@ I created a launch file in the launch directory that executes three nodes at the
  - The `control` node; 
  - The `ui` node.
 
+You can run the program by entering the following command:
+
+```
+roslaunch second_assignment launch_nodes.launch 
+```
+
 The UI node will run on an xterm terminal. 
 
 If any of the three node terminates the launch file will terminates all the nodes.
