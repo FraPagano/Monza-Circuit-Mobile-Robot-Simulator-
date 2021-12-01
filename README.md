@@ -100,7 +100,7 @@ The array's checked spans  are:
 	 - Front-left side, corresponding to the 450-510 array span.
 	 - Front-right side, corresponding to the 170-230 array span
 	 
-	Here's a picture that clarify that concept:
+Here's a picture that clarify that concept:
 	
 <p align="center">
 <img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/Scan.jpg" height=320 width=380>
