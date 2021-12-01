@@ -19,7 +19,7 @@ Here's some pictures that show the simulation enviroment provided us by profesor
  <img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos,%20gifs%20%20and%20images/Circuit.JPG" height=320 width=380>
 </p>
 
-The two nodes I created are quite simple: in the controller node the idea is to constantly check for data from laser sensors which the robot is equipped with and make turning decisions on the base of such data. The default velocities were set by implementing a publish–subscribe messaging pattern. On the other hand, the UI node waits for inputs from the user and by using a custom Service it modifies the robot velocity depending on the pressed key. Some additional features were added on the UI node. 
+The two nodes I created are quite simple: in the controller node the idea is to constantly check for data from laser sensors which the robot is equipped with and make turning decisions on the base of such data. Velocities were set by implementing a publish–subscribe messaging pattern. On the other hand, the UI node waits for inputs from the user and by using a custom Service it modifies the robot velocity depending on the pressed key. Some additional features were added on the UI node. The custom service message (`KeyboardInput.srv`) that I created is very simple: the `request` field is a char that will represent the user keyboard input. The `response` field is a float because it has to represent a number that will be the robot velocity multiplier.
 
 The greaest issues that I faced with during the implementation of the project were:
 
@@ -36,12 +36,12 @@ The greaest issues that I faced with during the implementation of the project we
 
 #### Controlling node
 
-Some important global object were instantiated such as:
+Some important global object were instantiated here such as:
 
  1. A `geometry_msgs::Twist my_vel` message used for setting both the robot's linear and angular default velocities;
- 2. A custom service message `second_assignment::KeyboardInput my_input` whose `request` field is a *char* type and `response` field is a *float* type. This custom service message has been on purpose designed for the user keyboard's inputs;
+ 2. The custom service message `second_assignment::KeyboardInput my_input` on purpose designed for the user keyboard's inputs;
  3. A `ros::ServiceClient` for the velocity changes, handled by the UI node; 
- 4. Another `ros::ServiceClient` for the restart request, handled by the UI node.
+ 4. Another `ros::ServiceClient` for the restart request, handled by the UI node too.
 
 The controlling node is the one that set  both the robot's linear and angular velocities and elaborates data from laser sensors. Here, a turn decison method was implemented but also a Server that collects the Client (in the UI node) requests.
 The functions that I created are:
@@ -91,7 +91,9 @@ float compute_min(int imin, int imax, float ranges[]){
 }
 ```
 
- - `void Drive(float min_left, float min_right, float min_front, float ranges [])`: This is the function that drives the robot into the circuit. This function will be called in the Callback function so that the instructions will be looped. The implementation logic is quite simple: the minimum distances from the wall to the right, left, and in front of the robot are continuously updated. If the distace in front of the robot is less than 1.5 then a turning method is activated. If no walls closer than 1.5 are detected in the front direction the robot is simply going straight. In order to read all the data from the laser sensor which the robot is equipped with I implemented a subscriber to the `"/base_scan"` topic. This topic uses a message of type [`sensor_msgs::LaserScan`](http://docs.ros.org/en/api/sensor_msgs/html/msg/LaserScan.html) whose field called `ranges`  is an array of 721 elements. Such array provide us the distances from the walls in every direction. Element 0 give us the distance from the wall on the right side and the 721st element give us the distance on the left side. The logic is quite simple: if the distance on the right is less than the distance on the left, the robot is turning left. And the opposite is also true. The array's checked spans  are:  
+ - `void Drive(float min_left, float min_right, float min_front, float ranges [])`: This is the function that drives the robot into the circuit. This function will be called in the Callback function so that the instructions will be looped. The implementation logic is quite simple: the minimum distances around the robot are continuously updated. If the distace in front of the robot is less than 1.5 then a turning method is activated. If no walls closer than 1.5 are detected in the front direction the robot is simply going straight. In order to read all the data from the laser sensor which the robot is equipped with, I implemented a subscriber to the `"/base_scan"` topic. This topic uses a message of type [`sensor_msgs::LaserScan`](http://docs.ros.org/en/api/sensor_msgs/html/msg/LaserScan.html) whose field called `ranges`  is an array of 721 elements. Such array provide us the distances from the walls in every direction around the robot. Element 0 give us the distance from the wall on the right side and the 721st element give us the distance on the left side. The logic is quite simple: if the distance on the right is less than the distance on the left, the robot is turning left. And the opposite is also true. Furthermore, the front left/right directions are checked in order to avoid the robot to bump into the wall when its velocity is high.
+
+The array's checked spans  are:  
 	 - Left side, corresponding to the 0-100 array span.
 	 - Right side, corresponding to the 620-720 array span.
 	 - Front direction, corresponding to the 300-420 array span.
@@ -105,7 +107,7 @@ float compute_min(int imin, int imax, float ranges[]){
 </p>
 
 Thanks to the `compute_min(int imin, int imax, float ranges[])` function I could extrapolate the lowest distances among each span and therefore I could also let the robot make decisions based on the minimum distances. 
-The velocity managing  was done through the `geometry_message::Twist` message. The fields *linear* and *angular* have been used to modify the linear and angular velocity of the robot, while the fields *x* and *z* define orientation axis on which the speed is considered. Finally, the message is published.
+The velocity managing  was done through the `geometry_message::Twist` message. The fields *linear* and *angular* have been used to modify the linear and angular velocity of the robot, while the fields *x* and *z* define orientation axis on which the velocity is considered. Finally, the message is published.
 	Arguments:
 			1.	`min_left` (float): minimum distance from the wall on the left of the robot;
 			2.	`min_right` (float): minimum distance from the wall on the right of the robot;
@@ -179,17 +181,17 @@ The User Interface node handles the user keyboard inputs. Here's a legend of the
  - *'a'* keyboard key is used for increasing the robot linear velocity;
  - *'s'* keyboard key is used for decreasing the robot linear velocity;
  - *'r'* keyboard key is used for resetting the robot position and linear velocity;
- - *'q'* keyboard key is used for quitting the application and terminates all the nodes;
+ - *'q'* keyboard key is used for quitting the application and terminates all the nodes.
 
 Some important global object were instantiated such as:
 
- 1. A custom service message `second_assignment::KeyboardInput my_input`: here the `request` field of this object is set.
+ 1. The custom service message `second_assignment::KeyboardInput my_input`: here the `request` field of this object is set.
  2. A `ros::ServiceClient` for handling the keyboard input; 
  3. Another `ros::ServiceClient` for handling the service that restart the robot position; 
  4. A `char` type that will contain the user inputs,
  5. Another `char` type that will contain inputs when the user presses 'q'; 
 
-In the `main` function of the node a `while(ros::ok())` loop was created in order to constantly wait for user input. Whenever one of the above keyboard key is pressed, through `cin>>`, the user input is put in the `command` variable. If the command is a not allowed command, an error message is printed. Instead, if the user input is an allowed command, the `request` field of the custom service message `second_assignment::KeyboardInput my_input` is filled and request is sent to the server. The cases in which the input are *'r'* and *'q'*  are a little bit different from other cases because in *'r'* case we call two services: the one for restarting the robot position and the one for resetting the default velocity. For the *'q'* case, instead, some control for safety were implemented.
+In the `main` function of the node a `while(ros::ok())` loop was created in order to constantly wait for user input. Whenever one of the above keyboard key is pressed, through `cin>>`, the user input is put in the `command` variable. If the command is a not allowed command, an error message is printed. Instead, if the user input is an allowed command, the `request` field of the custom service message `second_assignment::KeyboardInput my_input` is filled and the request is sent to the server. The cases in which the input are *'r'* and *'q'*  are a little bit different from other cases because in *'r'* case we call two services: the one for restarting the robot position and the other one for resetting the default velocity. For the *'q'* case, instead, some control for safety were implemented.
 Here's a **peice** of the code for the `while(ros::ok())` loop:
 ```c++
  	while(ros :: ok()) {
@@ -232,7 +234,7 @@ First of all, [xterm](https://it.wikipedia.org/wiki/Xterm), a standard terminal 
 sudo apt update
 sudo apt-get install xterm
 ```
-I created a launch file in the launch directory that executes three nodes at the same time:
+I created a launch file in the _launch_ directory that executes three nodes at the same time:
 
  - The `stageros` node, that runs the simulation environment; 
  - The `control` node; 
@@ -297,7 +299,7 @@ https://user-images.githubusercontent.com/91267426/143897374-b2abea45-ce71-4e31-
 
 ### Possible Improvements
 --------------------------------
-A possible improvement that can be implemented is certainly to avoid bumping the robot into the wall when we increase its speed a lot. Some controls were implemented such as the computation of the minimum distance in the  front left & right direction span. Nevertheless I measured that with a 3.5 times greater velocity than the default velocity the robot bumps into the wall.
+A possible improvement that can be implemented is certainly to avoid bumping the robot into the wall when we increase its speed a lot. Some controls were implemented such as the computation of the minimum distance in the  front left & right direction span. Nevertheless I measured that with a 3.5 times greater velocity than the default velocity the robot still bumps into the wall.
 
 
 
