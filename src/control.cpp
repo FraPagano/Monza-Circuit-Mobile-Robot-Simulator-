@@ -1,13 +1,9 @@
-/*###LIBRARIES###*/
 #include "ros/ros.h"
-#include "turtlesim/Pose.h"
 #include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Twist.h"
-#include "turtlesim/Spawn.h"
-#include "turtlesim/Kill.h"
-#include "turtlesim/TeleportAbsolute.h"
 #include "second_assignment/KeyboardInput.h"
 #include "std_srvs/Empty.h"
+/*###LIBRARIES###*/
 #include <signal.h>
 
 /*###COLORS###*/

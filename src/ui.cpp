@@ -1,10 +1,10 @@
-/*###LIBRARIES###*/
 #include "ros/ros.h"
-#include "turtlesim/Pose.h"
 #include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Twist.h"
 #include "second_assignment/KeyboardInput.h"
 #include "std_srvs/Empty.h"
+
+/*###LIBRARIES###*/
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
