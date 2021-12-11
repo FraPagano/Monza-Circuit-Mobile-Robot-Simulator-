@@ -21,7 +21,7 @@ Here's some pictures that show the simulation enviroment provided us by profesor
 
 The two nodes I created are quite simple: in the controller node the idea is to constantly check for data from laser sensors which the robot is equipped with and make turning decisions on the base of such data. Velocities were set by implementing a publish–subscribe messaging pattern. On the other hand, the UI node waits for inputs from the user and by using a custom Service it modifies the robot velocity depending on the pressed key. Some additional features were added on the UI node. The custom service message (`KeyboardInput.srv`) that I created is very simple: the `request` field is a char that will represent the user keyboard input. The `response` field is a float because it has to represent a number that will be the robot velocity multiplier.
 
-The greaest issues that I faced with during the implementation of the project were:
+The greaest issues that I found during the implementation of the project were:
 
  - Become familiar with the ROS framework;
 
@@ -38,16 +38,16 @@ The greaest issues that I faced with during the implementation of the project we
 
 Some important global object were instantiated here such as:
 
- 1. A `geometry_msgs::Twist my_vel` message used for setting both the robot's linear and angular default velocities;
- 2. The custom service message `second_assignment::KeyboardInput my_input` on purpose designed for the user keyboard's inputs;
+ 1. A `geometry_msgs::Twist my_vel` This object is a Twist type of the class `geometry_msgs` and in particualr is a message used for setting both the robot's linear and angular default velocities;
+ 2. `second_assignment::KeyboardInput my_input`. This is the custom service message on purpose designed for the user keyboard inputs;
  3. A `ros::ServiceClient` for the velocity changes, handled by the UI node; 
  4. Another `ros::ServiceClient` for the restart request, handled by the UI node too.
 
-The controlling node is the one that set  both the robot's linear and angular velocities and elaborates data from laser sensors. Here, a turn decison method was implemented but also a Server that collects the Client (in the UI node) requests.
+The controlling node is the one that set both the robot's linear and angular velocities and elaborates data from laser sensors. Here, a turn decison method was implemented but also a Server that collects the Client (in the UI node) requests.
 The functions that I created are:
 
  - `bool interpreter(second_assignment::KeyboardInput::Request &req,
-   second_assignment::KeyboardInput::Response &res)`:  This is the server function that reads the requests from clients and changes the global variable `my_input.response.multiplier` that multiplies the default velocities so that it makes the robot's velocity increase/decrease. In particular,
+   second_assignment::KeyboardInput::Response &res)`:  This is the server function that reads the requests from clients and changes the global variable `my_input.response.multiplier` (that is the response field of the custom service message) that multiplies the default velocities so that it makes the robot velocity increase/decrease. In particular,
 		1.	The keyborad key 'a' is used for increasing the multiplier and therefore also the robot velocity.
 		2.	The keyborad key 's' is used for decreasing the multiplier and therefore also the robot velocity.
 		3.	The keyborad key 'q' is used for terminating the processes.
@@ -93,14 +93,16 @@ float compute_min(int imin, int imax, float ranges[]){
 
  - `void Drive(float min_left, float min_right, float min_front, float ranges [])`: This is the function that drives the robot into the circuit. This function will be called in the Callback function so that the instructions will be looped. The implementation logic is quite simple: the minimum distances around the robot are continuously updated. If the distace in front of the robot is less than 1.5 then a turning method is activated. If no walls closer than 1.5 are detected in the front direction the robot is simply going straight. In order to read all the data from the laser sensor which the robot is equipped with, I implemented a subscriber to the `"/base_scan"` topic. This topic uses a message of type [`sensor_msgs::LaserScan`](http://docs.ros.org/en/api/sensor_msgs/html/msg/LaserScan.html) whose field called `ranges`  is an array of 721 elements. Such array provide us the distances from the walls in every direction around the robot. Element 0 give us the distance from the wall on the right side and the 721st element give us the distance on the left side. The logic is quite simple: if the distance on the right is less than the distance on the left, the robot is turning left. And the opposite is also true. Furthermore, the front left/right directions are checked in order to avoid the robot to bump into the wall when its velocity is high.
 
-The array's checked spans  are:  
+The array's checked spans are: 
+
 	 - Left side, corresponding to the 0-100 array span.
 	 - Right side, corresponding to the 620-720 array span.
 	 - Front direction, corresponding to the 300-420 array span.
 	 - Front-left side, corresponding to the 450-510 array span.
 	 - Front-right side, corresponding to the 170-230 array span
 	 
-Here's a picture that clarify that concept:
+	 
+Here's a picture that clarify this concept:
 	
 <p align="center">
 <img src="https://github.com/FraPagano/RT_Assignment_2/blob/main/Videos%2C%20gifs%20%20and%20images/Scan.jpg" height=320 width=380>
