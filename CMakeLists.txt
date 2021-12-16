@@ -111,9 +111,9 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
-###########
-## Build ##
-###########
+############
+## Build ###
+############
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations

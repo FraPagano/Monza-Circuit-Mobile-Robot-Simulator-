@@ -1,9 +1,9 @@
+/*###LIBRARIES & HEADERS###*/
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Twist.h"
 #include "second_assignment/KeyboardInput.h"
 #include "std_srvs/Empty.h"
-/*###LIBRARIES###*/
 #include <signal.h>
 
 /*###COLORS###*/
@@ -56,7 +56,7 @@ float compute_min(int imin, int imax, float ranges[]){
 		2. 	i_max (int): grater  index in which the computation should end    
 		3. 	ranges[] (float): this is the array in which the computation must be done
 	Return value:
-		1.	min (float): minimum value among all values in the 'ranges[]' array*/
+		1.	min (float): minimum value among all values in the 'ranges[]' array. */
 		
 	float min=30;					
 	for(int i=imin; i<imax; i++){ 

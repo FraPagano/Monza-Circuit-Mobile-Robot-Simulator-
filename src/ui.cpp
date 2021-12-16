@@ -1,10 +1,9 @@
+/*###LIBRARIES & HEADERS###*/
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Twist.h"
 #include "second_assignment/KeyboardInput.h"
 #include "std_srvs/Empty.h"
-
-/*###LIBRARIES###*/
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -33,7 +32,6 @@ ros::ServiceClient client_restart;
 /*###CUSTOM SERVICE MESSAGE###*/
 /*This is the declaration of a second_assignment::KeyboardInput type service message. 
 I created this custom service mesage for interpreting the keyboard inputs.	*/
-
 second_assignment::KeyboardInput my_input;
 
 /*###SERVICE MESSAGE###*/
