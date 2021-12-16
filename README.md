@@ -21,6 +21,14 @@ Here's some pictures that show the simulation enviroment provided us by profesor
 
 The two nodes I created are quite simple: in the controller node the idea is to constantly check for data from laser sensors which the robot is equipped with and make turning decisions on the base of such data. Velocities were set by implementing a publish–subscribe messaging pattern. On the other hand, the UI node waits for inputs from the user and by using a custom Service it modifies the robot velocity depending on the pressed key. Some additional features were added on the UI node. The custom service message (`KeyboardInput.srv`) that I created is very simple: the `request` field is a char that will represent the user keyboard input. The `response` field is a float because it has to represent a number that will be the robot velocity multiplier.
 
+Here's the cusotm service message:
+
+```
+char input
+---
+float32 multiplier
+```
+
 The greaest issues that I found during the implementation of the project were:
 
  - Become familiar with the ROS framework;
