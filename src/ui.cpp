@@ -33,6 +33,7 @@ ros::ServiceClient client_restart;
 /*###CUSTOM SERVICE MESSAGE###*/
 /*This is the declaration of a second_assignment::KeyboardInput type service message. 
 I created this custom service mesage for interpreting the keyboard inputs.	*/
+
 second_assignment::KeyboardInput my_input;
 
 /*###SERVICE MESSAGE###*/
@@ -41,7 +42,7 @@ std_srvs::Empty restart_srv; //this service message is used for resetting the ro
 
 int main(int argc, char **argv)
 {
-	cout<< "\n" BHBLK "################# USER INTERFACE #################" RESET "\n";
+	cout<< "\n" BHBLK "################## USER INTERFACE ##################" RESET "\n";
 	cout<< BHGRN "Press 'a' for increasing the robot velocity!" RESET"\n"; 
 	cout<< BHBLU "Press 's' for decreasing the robot velocity!" RESET"\n"; 
 	cout<< BHCYN "Press 'r' for resetting the robot initial position and velocity!" RESET"\n"; 

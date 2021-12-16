@@ -25,14 +25,14 @@ ros::Publisher pub;
 float front_th=1.5; 		// minimum front distance at which the robot stay from the walls
 float front_left_th=1.0;	// minimum front-left distance at which the robot stay from the walls
 float front_right_th=1.0;	// minimum front-right distance at wich the robot stay from the walls
-float k_angular=5.0; 		// constant angular velocity while the robot is turning
+float k_angular=10.0; 		// constant angular velocity while the robot is turning
 float k_linear=0.4; 		// constant linear velocity while the robot is turning
 float default_vel=2.0; 		// default linear velocity while the robot is not facing any wall
 float min_left; 		// this variable will contain the minimum distance from the wall computed on the left of the robot  
 float min_right; 		// this variable will contain the minimum distance from the wall computed on the right of the robot  
 float min_front; 		// this variable will contain the minimum distance from the wall computed on in front of the robot  
-float min_front_l;
-float min_front_r;
+float min_front_l;		// this variable will contain the minimum distance from the wall computed on in front-left direction
+float min_front_r;		// this variable will contain the minimum distance from the wall computed on in front-right direction
 float laser [721]; 		//this float array will contain all the distances in every direction: from 0 (right of the robot) to 721 (left of the robot).
 
 /*###MESSAGES###*/
@@ -69,7 +69,7 @@ float compute_min(int imin, int imax, float ranges[]){
 
 bool interpreter(second_assignment::KeyboardInput::Request &req, second_assignment::KeyboardInput::Response &res){
 
-	/*This is the function that uses the Service 'service'. It reads the requests from clients and
+	/*This is the function that uses the Service 'service'. It reads the requests from client and
 	change the global variable 'my_input.response.multiplier' that multiplies the velocities so that 
 	it makes the robot increase/decrease the velocity. 
 	1.	The keyborad key 'a' is used for increasing the multiplier and therefore also the robot velocity.
